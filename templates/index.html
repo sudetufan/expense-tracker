@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+</head>
+<body>
+
+<h1>Harcama Listesi</h1>
+
+<a href="/add">Yeni Harcama Ekle</a>
+<ul>
+    {% for expense in expenses %}
+        <li>{{ expense.title }} - {{ expense.amount }} TL
+            ({{ expense.category}}, {{ expense.date}})
+        </li>
+
+    {% endfor %}
+</ul>
+{% if expenses|length == 0 %}
+    <p>Henüz harcama kaydedilmedi.</p>
+{% endif %}
+
+</body>
+</html>
