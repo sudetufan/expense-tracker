@@ -3,23 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
+<div class="container">
+
 <h1>Harcama Listesi</h1>
 
-<a href="/add">Yeni Harcama Ekle</a>
+<h3>Toplam Harcama: {{ total }}₺</h3>
+<br><br>
+
+<a href="/add">+ Yeni Harcama Ekle</a>
+
 <ul>
     {% for expense in expenses %}
-        <li>{{ expense.title }} - {{ expense.amount }} TL
-            ({{ expense.category}}, {{ expense.date}})
-        </li>
+        <li>
+            <span>{{ expense.title }} ({{ expense.category }})</span>
+            <strong>{{ expense.amount }}₺</strong>
 
+            <a href= "{{url_for('delete_expense', id=expense.id)}}">
+                <button>Sil</button>
+            </a>
+        </li>
     {% endfor %}
 </ul>
+
 {% if expenses|length == 0 %}
-    <p>Henüz harcama kaydedilmedi.</p>
+    <p class="empty">Henüz harcama eklenmedi.</p>
 {% endif %}
+
+</div>
 
 </body>
 </html>

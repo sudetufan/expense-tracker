@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
 DATABASE = 'database.db'
@@ -14,8 +14,12 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     expenses = conn.execute('select * from expenses').fetchall()
+
+    total = conn.execute("select sum(amount) from expenses").fetchone()[0]
     conn.close()
-    return render_template('index.html', expenses=expenses)
+    if total is None:
+        total = 0
+    return render_template('index.html', expenses=expenses, total=total)
 
 @app.route('/add', methods=["GET", "POST"])
 def add_expense():
@@ -34,6 +38,17 @@ def add_expense():
 
         return redirect('/')
     return render_template('add_expense.html')
+
+
+@app.route("/delete/<int:id>")
+def delete_expense(id):
+    conn = get_db_connection()
+    conn.execute("delete from expenses where id=?", (id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
