@@ -1,6 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
+CATEGORIES = [
+    "Yemek",
+    "Ulaşım",
+    "Eğlence",
+    "Alışveriş",
+    "Fatura",
+    "Diğer"
+]
+
 DATABASE = 'database.db'
 app = Flask(__name__)
 
@@ -16,10 +25,12 @@ def index():
     expenses = conn.execute('select * from expenses').fetchall()
 
     total = conn.execute("select sum(amount) from expenses").fetchone()[0]
-    conn.close()
     if total is None:
         total = 0
-    return render_template('index.html', expenses=expenses, total=total)
+
+    category_totals = conn.execute("select category, sum(amount) as total from expenses group by category").fetchall()
+    conn.close()
+    return render_template('index.html', expenses=expenses, total=total, category_totals=category_totals, categories=CATEGORIES)
 
 @app.route('/add', methods=["GET", "POST"])
 def add_expense():
@@ -37,7 +48,7 @@ def add_expense():
         conn.close()
 
         return redirect('/')
-    return render_template('add_expense.html')
+    return render_template('add_expense.html', categories=CATEGORIES)
 
 
 @app.route("/delete/<int:id>")

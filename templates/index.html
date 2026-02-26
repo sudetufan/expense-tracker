@@ -10,11 +10,19 @@
 <div class="container">
 
 <h1>Harcama Listesi</h1>
+<br>
+<h2>Toplam Harcama: {{ total }} ₺</h2>
+<br>
+<h3>Kategoriye göre harcamalar:</h3>
 
-<h3>Toplam Harcama: {{ total }}₺</h3>
+<ul>
+    {% for item in category_totals %}
+        <li>{{ item.category }}: {{ item.total }} ₺</li>
+    {% endfor %}
+</ul>
 <br><br>
-
 <a href="/add">+ Yeni Harcama Ekle</a>
+
 
 <ul>
     {% for expense in expenses %}
